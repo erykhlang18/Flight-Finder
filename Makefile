@@ -8,7 +8,7 @@ runFDTest: compileFDTests
 	java -jar $(JUNIT_JAR) -cp . --scan-classpath
 
 # Compile frontend and backend placeholder classes along with tests
-compileFDTests:
+compileFDTest:
 	javac -cp ".:$(JUNIT_JAR)" *.java
 
 # Clean up the compiled files
