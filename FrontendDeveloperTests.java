@@ -1,100 +1,138 @@
+// --== CS400 File Header Information ==--
+// Name: Aiden Lang
+// Email: ajlang5@wisc.edu
+// Group and Team:G26, yellow
+// Group TA: Alex Peseckis
+// Lecturer: Florian Heimerl
+// Notes to Grader: <optional extra notes>
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This class contains unit tests for the Frontend class.
+ * It tests various functionalities of the Frontend class including file loading,
+ * displaying statistics, finding routes, and exiting the application.
+ */
 public class FrontendDeveloperTests {
 
-    private FrontendInterface frontend;
-    private BackendInterface mockBackend;
+    private Frontend frontend;
+    private BackendPlaceholder mockBackend;
+    private final InputStream originalSystemIn = System.in;
 
+    /**
+     * Set up common test data and configurations before each test.
+     * Initializes a new instance of BackendPlaceholder and Frontend with a new Scanner.
+     */
     @BeforeEach
     public void setUp() {
-        frontend = new Frontend(mockBackend, new Scanner(System.in)) {
-        };
+        mockBackend = new BackendPlaceholder();
+        frontend = new Frontend(mockBackend, new Scanner(System.in));
     }
 
     /**
-     * Test loading a valid data file.
+     * Provides a way to simulate user input by setting System.in to a ByteArrayInputStream.
+     * @param data The string to be used as the simulated input.
+     */
+    private void provideInput(String data) {
+        ByteArrayInputStream testIn = new ByteArrayInputStream(data.getBytes());
+        System.setIn(testIn);
+    }
+
+    /**
+     * Tests loading of a valid file.
+     * Expects no exception to be thrown for a valid file path.
      */
     @Test
     public void testLoadFile_ValidFile() {
+        provideInput("path/to/valid/file.txt");
+        Scanner scanner = new Scanner(System.in);
+        Frontend testFrontend = new Frontend(mockBackend, scanner);
+
         try {
-            frontend.loadFile();
-            // Test passes if no exception is thrown
+            testFrontend.loadFile();
         } catch (Exception e) {
             fail("Loading a valid file should not have thrown any exception.");
         }
     }
 
     /**
-     * Test attempting to load an invalid data file.
+     * Tests loading of an invalid file.
+     * Expects a FileNotFoundException to be thrown for an invalid file path.
      */
     @Test
     public void testLoadFile_InvalidFile() {
-        try {
-            frontend.loadFile();
-            fail("Loading an invalid file should have thrown FileNotFoundException.");
-        } catch (FileNotFoundException e) {
-            // Expected exception
-        } catch (Exception e) {
-            fail("An unexpected exception was thrown.");
-        }
+        provideInput("invalid/file/path.txt");
+        Scanner scanner = new Scanner(System.in);
+        Frontend testFrontend = new Frontend(mockBackend, scanner);
+
+        Exception exception = assertThrows(FileNotFoundException.class, testFrontend::loadFile);
+        assertTrue(exception.getMessage().contains("File not found"));
     }
 
     /**
-     * Test displaying statistics about the dataset.
+     * Tests the display of statistics with a file loaded.
+     * Expects no exception to be thrown when displaying statistics.
      */
     @Test
     public void testShowStats_WithFileLoaded() {
         try {
             frontend.showStats();
-            // Pass test if no exceptions are thrown
         } catch (Exception e) {
             fail("Showing stats should not have thrown any exception.");
         }
     }
 
     /**
-     * Test finding a route with valid inputs.
+     * Tests finding a route with valid start and end inputs.
+     * Expects no exception to be thrown for valid inputs.
      */
     @Test
     public void testGetRoute_ValidInputs() {
+        provideInput("START\nEND");
+        Scanner scanner = new Scanner(System.in);
+        Frontend testFrontend = new Frontend(mockBackend, scanner);
+
         try {
-            frontend.getRoute();
-            // Test passes if no exception is thrown
+            testFrontend.getRoute();
         } catch (Exception e) {
             fail("Getting route with valid inputs should not have thrown any exception.");
         }
     }
 
     /**
-     * Test finding a route with invalid inputs.
+     * Tests finding a route with invalid start and end inputs.
+     * Expects no exception to be thrown for invalid inputs.
      */
     @Test
     public void testGetRoute_InvalidInputs() {
+        provideInput("INVALID_START\nINVALID_END");
+        Scanner scanner = new Scanner(System.in);
+        Frontend testFrontend = new Frontend(mockBackend, scanner);
+
         try {
-            frontend.getRoute();
-            // Expecting some form of handling for invalid inputs
+            testFrontend.getRoute();
         } catch (Exception e) {
-            // Test passes if an exception is thrown for invalid inputs
+            fail("The method should handle invalid inputs without throwing an exception.");
         }
     }
 
     /**
-     * Test the functionality of the exit command.
+     * Tests the functionality of exiting the application.
+     * Expects no exception to be thrown when exiting the application.
      */
     @Test
     public void testExitApp() {
         try {
             frontend.exitApp();
-            // Test passes if no exception is thrown
         } catch (Exception e) {
             fail("Exiting the app should not have thrown any exception.");
         }
     }
-
 }
