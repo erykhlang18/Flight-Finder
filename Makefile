@@ -8,7 +8,7 @@ compileFDTest:
 	javac *.java
 
 # Run frontend developer tests
-runFDTests: compileFDTest
+runFDTest: compileFDTest
 	java -jar $(JUNIT_JAR) --class-path . --scan-class-path
 
 # Clean up the compiled files
