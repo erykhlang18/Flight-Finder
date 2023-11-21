@@ -4,7 +4,7 @@
 JUNIT_JAR = /home/ajlang5/junit5.jar
 
 # Compile frontend and backend placeholder classes along with tests
-compileFDTests:
+compileFDTest:
 	javac *.java
 
 # Run frontend developer tests
