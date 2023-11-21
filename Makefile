@@ -2,8 +2,8 @@
 
 # Compile and run frontend developer tests
 runFDTest: 
-	javac -cp ".:/home/ajlang5/junit5.jar" FrontendDeveloperTests.java
 	java -cp ".:/home/ajlang5/junit5.jar" FrontendDeveloperTests.java
+	java -jar ../junit5.jar -cp . -c FrontendDeveloperTests
 
 # Clean up the compiled files
 clean:
