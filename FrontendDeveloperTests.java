@@ -6,6 +6,7 @@
 // Lecturer: Florian Heimerl
 // Notes to Grader: <optional extra notes>
 
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
@@ -24,6 +25,8 @@ public class FrontendDeveloperTests {
 
     private Frontend frontend;
     private BackendPlaceholder mockBackend;
+    private BackendInterface backend;
+
     private final InputStream originalSystemIn = System.in;
 
     /**
@@ -112,7 +115,7 @@ public class FrontendDeveloperTests {
      */
     @Test
     public void testGetRoute_InvalidInputs() {
-        provideInput("INVALID_START\nINVALID_END");
+        provideInput("INVA LID_START\nINVALID_END");
         Scanner scanner = new Scanner(System.in);
         Frontend testFrontend = new Frontend(mockBackend, scanner);
 
@@ -135,4 +138,40 @@ public class FrontendDeveloperTests {
             fail("Exiting the app should not have thrown any exception.");
         }
     }
+
+    @BeforeEach
+    public void setUp2() {
+        backend = new BackendPlaceholder(); // Replace with actual backend once available
+        frontend = new Frontend(backend, new Scanner(System.in));
+    }
+
+    /**
+     * Integration test to check if the frontend correctly uses the backend to load a file.
+     * This test simulates the frontend loading a file using the backend's interface.
+     * It's expected to fail compilation until the actual backend implementation is provided.
+     */
+    @Test
+    public void testLoadFileIntegration() {
+        provideInput("path/to/valid/file.txt");
+        Scanner scanner = new Scanner(System.in);
+        Frontend testFrontend = new Frontend(backend, scanner);
+
+        assertThrows(FileNotFoundException.class, testFrontend::loadFile);
+    }
+
+    /**
+     * Integration test to check if the frontend correctly interacts with the backend to find a route.
+     * This test simulates the process of finding a route using the frontend with backend integration.
+     * It's expected to fail compilation until the actual backend implementation is provided.
+     */
+    @Test
+    public void testGetRouteIntegration() {
+        provideInput("START\nEND");
+        Scanner scanner = new Scanner(System.in);
+        Frontend testFrontend = new Frontend(backend, scanner);
+
+        testFrontend.getRoute();
+        // Further assertions would be made here based on the expected behavior of the backend
+    }
+
 }
