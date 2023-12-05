@@ -1,88 +1,125 @@
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
-public class BackendDeveloperTests {
 
-    private GraphADT<String, Double> graph;
-    private MapADT<String, BaseGraph<String, Double>.Node> map;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * This class extends the backend class to run tests
+ */
+public class BackendDeveloperTests  {
+
+	/**
+	* this tester method reads a given file and then 
+	*finds if the program throws an exception or not
+	*/
+    @Test
+    public void testReadDataFile() {
+        DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
+        backend back = new backend(graph);
+          try {
+            back.readDataFile("/home/eliang7/p2/flights.dot");
+        } catch (FileNotFoundException e) {
+            Assertions.assertFalse(true);
+        }
+
+    }
+
+	/**
+	*this tester method tests the functionality of the getGraphStats method in the backend class
+	*/
+    @Test
+    public void testGetGraphStats() {
+        DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
+        backend back = new backend(graph);
+          try {
+            back.readDataFile("/home/eliang7/p2/flights.dot");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        String expectedStats = "total airports 58\ntotal connections 1598\ntotal miles 2142457.0";
+            Assertions.assertEquals(expectedStats, back.getGraphStats());
+        }
 
     
-    void setUp() {
-        // Initialize the graph and map before each test
-        map = new PlaceholderMap<>();
-        graph = new BaseGraph<>(map);
+	/**
+	* this tester method tests the functionality of the shortest path and tests for
+	* the prograrm's ability to catch null exceptions 
+	*/
+    @Test
+    public void testShortestPathException() {
+        DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
+        backend back = new backend(graph);
+
+        try {
+        back.readDataFile("/home/eliang7/p2/flights.dot");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        assertThrows(NoSuchElementException.class, () -> back.getShortestRoute("Start", "null"));
+    }
+
+	/**
+	*this tests loading an invalid file to the program 
+	*/
+    @Test
+    public void testReadDataFileFileNotFoundException() {
+        DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
+        backend back = new backend(graph);
+        assertThrows(FileNotFoundException.class, () -> back.readDataFile("NonexistentFile.dot"));
+        // Add additional assertions if needed
+    }
+
+	/**
+	* this tester method tries to test the functionality of the dikjstra's graph implementation 
+	* by using the shortest path command between two different airports
+	*/
+    @Test
+    public void testShortestPath(){
+                DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
+        backend back = new backend(graph);
+        try {
+            back.readDataFile("/home/eliang7/p2/flights.dot");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Assertions.assertEquals(1330.0, graph.shortestPathCost("LAX", "OMA"));
+    }
+
+
+    //integration tests
+    @Test
+    public void testLoadFile() {
+        DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
+        backend back = new backend(graph);
+       // FrontendInterface frontend = new YourFrontendImplementation(back);
+
+ //       assertThrows(FileNotFoundException.class, () -> frontend.loadFile("NonexistentFile.dot"));
     }
 
     @Test
-    void testInsertNode() {
-        // Test inserting a new node
-        Assertions.assertTrue(graph.insertNode("A"));
-        Assertions.assertEquals(1, graph.getNodeCount());
-        Assertions.assertTrue(graph.containsNode("A"));
+    public void testShowStatsWithoutLoadingFile() {
+        DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
+        backend back = new backend(graph);
+    //    FrontendInterface frontend = new YourFrontendImplementation(back);
 
-        // Test inserting a duplicate node
-        Assertions.assertFalse(graph.insertNode("A"));
-        Assertions.assertEquals(1, graph.getNodeCount());
+        // Ensure an error message is printed when trying to show stats without loading a file
+     //   assertTrue(captureSystemOut(() -> frontend.showStats()).contains("Error: No file loaded."));
     }
 
-    @Test
-    void testRemoveNode() {
-        // Test removing a non-existent node
-        Assertions.assertFalse(graph.removeNode("A"));
-        Assertions.assertEquals(0, graph.getNodeCount());
-
-        // Test removing an existing node
-        graph.insertNode("A");
-        Assertions.assertTrue(graph.removeNode("A"));
-        Assertions.assertEquals(0, graph.getNodeCount());
-        Assertions.assertFalse(graph.containsNode("A"));
-    }
-
-    @Test
-    void testInsertEdge() {
-        // Test inserting a new edge
-        graph.insertNode("A");
-        graph.insertNode("B");
-        Assertions.assertTrue(graph.insertEdge("A", "B", 5.0));
-        Assertions.assertEquals(1, graph.getEdgeCount());
-        Assertions.assertTrue(graph.containsEdge("A", "B"));
-        Assertions.assertEquals(5.0, graph.getEdge("A", "B"));
-
-        // Test inserting an edge with non-existent nodes
-        Assertions.assertFalse(graph.insertEdge("C", "D", 3.0));
-        Assertions.assertEquals(1, graph.getEdgeCount());
-    }
-
-    @Test
-    void testRemoveEdge() {
-        // Test removing a non-existent edge
-        Assertions.assertFalse(graph.removeEdge("A", "B"));
-
-        // Test removing an existing edge
-        graph.insertNode("A");
-        graph.insertNode("B");
-        graph.insertEdge("A", "B", 5.0);
-        Assertions.assertTrue(graph.removeEdge("A", "B"));
-        Assertions.assertEquals(0, graph.getEdgeCount());
-        Assertions.assertFalse(graph.containsEdge("A", "B"));
-    }
-
-    @Test
-    void testShortestPathData() {
-        // Test finding the shortest path between nodes
-        graph.insertNode("A");
-        graph.insertNode("B");
-        graph.insertNode("C");
-        graph.insertEdge("A", "B", 2.0);
-        graph.insertEdge("B", "C", 3.0);
-        graph.insertEdge("A", "C", 5.0);
-
-        Assertions.assertEquals(3, graph.shortestPathData("A", "C").size());
-        Assertions.assertEquals("A", graph.shortestPathData("A", "C").get(0));
-        Assertions.assertEquals("B", graph.shortestPathData("A", "C").get(1));
-        Assertions.assertEquals("C", graph.shortestPathData("A", "C").get(2));
-    }
+ 
 }
-
-
-
-

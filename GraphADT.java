@@ -124,4 +124,6 @@ public interface GraphADT<NodeType, EdgeType extends Number> {
      */
     public double shortestPathCost(NodeType start, NodeType end);
 
+    public List<Double> milesPerSegment(NodeType start, NodeType end);
+
 }

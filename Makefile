@@ -1,6 +1,6 @@
 runBDTests: BackendDeveloperTests.java
-	javac BackendDeveloperTests.java
-	java BackendDeveloperTests
+	javac -cp ../junit5.jar: BackendDeveloperTests.java
+	java -jar ../junit5.jar -cp . -c BackendDeveloperTests
 clean:
 	rm -f *.class
 	rm -f *.1
