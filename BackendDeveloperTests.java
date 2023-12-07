@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -20,10 +22,10 @@ import java.util.regex.Pattern;
  */
 public class BackendDeveloperTests  {
 
-	/**
-	* this tester method reads a given file and then 
-	*finds if the program throws an exception or not
-	*/
+        /**
+        * this tester method reads a given file and then 
+        *finds if the program throws an exception or not
+        */
     @Test
     public void testReadDataFile() {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
@@ -36,9 +38,9 @@ public class BackendDeveloperTests  {
 
     }
 
-	/**
-	*this tester method tests the functionality of the getGraphStats method in the backend class
-	*/
+        /**
+        *this tester method tests the functionality of the getGraphStats method in the backend class
+        */
     @Test
     public void testGetGraphStats() {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
@@ -54,10 +56,10 @@ public class BackendDeveloperTests  {
         }
 
     
-	/**
-	* this tester method tests the functionality of the shortest path and tests for
-	* the prograrm's ability to catch null exceptions 
-	*/
+        /**
+        * this tester method tests the functionality of the shortest path and tests for
+        * the prograrm's ability to catch null exceptions 
+        */
     @Test
     public void testShortestPathException() {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
@@ -69,12 +71,12 @@ public class BackendDeveloperTests  {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        assertThrows(NoSuchElementException.class, () -> back.getShortestRoute("Start", "null"));
-    }
+    assertDoesNotThrow(() -> back.getShortestRoute("Start", "null"));   
+    }    
 
-	/**
-	*this tests loading an invalid file to the program 
-	*/
+        /**
+        *this tests loading an invalid file to the program 
+        */
     @Test
     public void testReadDataFileFileNotFoundException() {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
@@ -83,10 +85,10 @@ public class BackendDeveloperTests  {
         // Add additional assertions if needed
     }
 
-	/**
-	* this tester method tries to test the functionality of the dikjstra's graph implementation 
-	* by using the shortest path command between two different airports
-	*/
+        /**
+        * this tester method tries to test the functionality of the dikjstra's graph implementation 
+        * by using the shortest path command between two different airports
+        */
     @Test
     public void testShortestPath(){
                 DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
@@ -103,23 +105,40 @@ public class BackendDeveloperTests  {
 
     //integration tests
     @Test
-    public void testLoadFile() {
+    public void testLoadFileIntegration() {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
         backend back = new backend(graph);
-       // FrontendInterface frontend = new YourFrontendImplementation(back);
+        String input = "load\n/home/eliang7/p2/flights.dot\nexit\n";
+        StringReader stringReader = new StringReader(input);
+        Scanner scan = new Scanner (stringReader);
+        Frontend front = new Frontend(back, scan);
 
- //       assertThrows(FileNotFoundException.class, () -> frontend.loadFile("NonexistentFile.dot"));
+        try {
+            front.startApp();
+        } catch (Exception e) {
+            // If an exception is thrown, fail the test
+            e.printStackTrace();
+            // You can add additional assertions or log messages as needed
+            fail("Exception thrown: " + e.getMessage());
+        }
     }
 
     @Test
-    public void testShowStatsWithoutLoadingFile() {
+    public void testGetInvalidRouteIntegration () {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
         backend back = new backend(graph);
-    //    FrontendInterface frontend = new YourFrontendImplementation(back);
+        String input = "load\n/home/eliang7/p2/flights.dot\nroute\nLAX\nJFK";
+        StringReader stringReader = new StringReader(input);
+        Scanner scan = new Scanner (stringReader);
+        Frontend front = new Frontend(back, scan);
 
-        // Ensure an error message is printed when trying to show stats without loading a file
-     //   assertTrue(captureSystemOut(() -> frontend.showStats()).contains("Error: No file loaded."));
+        try {
+            front.startApp();
+            Assertions.assertTrue(false);
+        } catch (Exception e) {
+            Assertions.assertTrue(true);
+        }
+    }
     }
 
  
-}

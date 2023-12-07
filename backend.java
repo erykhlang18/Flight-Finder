@@ -6,8 +6,11 @@
 // Lecturer: <Florian Heimerl>
 // Notes to Grader: 
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,9 +30,11 @@ public class backend implements BackendInterface {
     /**
      * this class reads in a file that the user can choose to send in
      * throws a FileNOtFoundException if the file does not exist. 
+     * @throws FileNotFoundException
      */
     @Override
     public void readDataFile(String filePath) throws FileNotFoundException {
+        try{
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
@@ -50,10 +55,12 @@ public class backend implements BackendInterface {
             
         }
       }
-
         // Close the scanner
         scanner.close();
-    }
+     }catch(FileNotFoundException e){
+            throw new FileNotFoundException("File not found");
+        }
+         }
 
     /**
      * this class gets the shortest route, its data, its path and the miles per each segment. 
@@ -62,10 +69,15 @@ public class backend implements BackendInterface {
     @Override
     public PathClass getShortestRoute(String start, String end) {
 
+        if(graph.containsNode(start) && graph.containsNode(end)){
         List<String> data = graph.shortestPathData(start, end);
         double cost = graph.shortestPathCost(start, end);
         List<Double> milesSegment = graph.milesPerSegment(start,end);
         return new PathClass(data,milesSegment,cost);
+    } else {
+        System.out.println("invalid start or end");
+        return null;
+    }
     }
 
     /**
@@ -108,4 +120,13 @@ public class backend implements BackendInterface {
     }
 
 
+    public static void main(String[] args){
+        DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
+        backend back = new backend(graph);
+        Scanner scan = new Scanner(System.in);
+
+        Frontend front = new Frontend(back, scan);
+        front.startApp();
+        
+    }
 }
