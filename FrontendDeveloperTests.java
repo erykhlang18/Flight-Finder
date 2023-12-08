@@ -158,7 +158,7 @@ public class FrontendDeveloperTests {
         Scanner scanner = new Scanner(System.in);
         Frontend testFrontend = new Frontend(backend, scanner);
 
-       assertThrows(FileNotFoundException.class, testFrontend::loadFile);
+       assertDoesNotThrow(testFrontend::loadFile);
     }
 
     /**

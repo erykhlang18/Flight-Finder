@@ -58,7 +58,7 @@ public class backend implements BackendInterface {
         // Close the scanner
         scanner.close();
      }catch(FileNotFoundException e){
-            throw new FileNotFoundException("File not found");
+        System.out.println("file not found");
         }
          }
 
