@@ -31,7 +31,7 @@ public class BackendDeveloperTests  {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
         backend back = new backend(graph);
           try {
-            back.readDataFile("/home/eliang7/p2/flights.dot");
+            back.readDataFile("flights.dot");
         } catch (FileNotFoundException e) {
             Assertions.assertFalse(true);
         }
@@ -46,7 +46,7 @@ public class BackendDeveloperTests  {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
         backend back = new backend(graph);
           try {
-            back.readDataFile("/home/eliang7/p2/flights.dot");
+            back.readDataFile("flights.dot");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -66,7 +66,7 @@ public class BackendDeveloperTests  {
         backend back = new backend(graph);
 
         try {
-        back.readDataFile("/home/eliang7/p2/flights.dot");
+        back.readDataFile("flights.dot");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -94,7 +94,7 @@ public class BackendDeveloperTests  {
                 DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
         backend back = new backend(graph);
         try {
-            back.readDataFile("/home/eliang7/p2/flights.dot");
+            back.readDataFile("flights.dot");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -108,7 +108,7 @@ public class BackendDeveloperTests  {
     public void testLoadFileIntegration() {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
         backend back = new backend(graph);
-        String input = "load\n/home/eliang7/p2/flights.dot\nexit\n";
+        String input = "load\nflights.dot\nexit\n";
         StringReader stringReader = new StringReader(input);
         Scanner scan = new Scanner (stringReader);
         Frontend front = new Frontend(back, scan);
@@ -127,7 +127,7 @@ public class BackendDeveloperTests  {
     public void testGetInvalidRouteIntegration () {
         DijkstraGraph<String, Integer> graph = new DijkstraGraph<>(new PlaceholderMap<>());
         backend back = new backend(graph);
-        String input = "load\n/home/eliang7/p2/flights.dot\nroute\nLAX\nJFK";
+        String input = "load\nflights.dot\nroute\nLAX\nJFK";
         StringReader stringReader = new StringReader(input);
         Scanner scan = new Scanner (stringReader);
         Frontend front = new Frontend(back, scan);

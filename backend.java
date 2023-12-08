@@ -101,7 +101,7 @@ public class backend implements BackendInterface {
         double totalMiles = 0.0;
         Pattern airports = Pattern.compile("miles=(\\d+)];");
 
-        try(Scanner scan = new Scanner(new File("/home/eliang7/p2/flights.dot"))){
+        try(Scanner scan = new Scanner(new File("flights.dot"))){
             while(scan.hasNextLine()){
 
                 String next = scan.nextLine();
