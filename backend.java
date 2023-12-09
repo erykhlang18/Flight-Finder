@@ -6,7 +6,6 @@
 // Lecturer: <Florian Heimerl>
 // Notes to Grader: 
 
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
